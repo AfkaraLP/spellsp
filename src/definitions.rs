@@ -110,10 +110,10 @@ impl std::fmt::Display for WordDef {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if let Some(def) = &self.definition {
             writeln!(f, "- `Definition`: {def}")?;
-        };
+        }
         if let Some(example) = &self.example {
             writeln!(f, "- `Example`: {example}")?;
-        };
+        }
 
         Ok(())
     }

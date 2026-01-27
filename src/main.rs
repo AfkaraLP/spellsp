@@ -1,3 +1,4 @@
+use clap::Parser;
 use std::fmt::Write;
 use tokio::sync::Mutex;
 use tower_lsp::jsonrpc::Result;
@@ -14,8 +15,10 @@ use zspell::Dictionary;
 use crate::definitions::{get_definitions, word_at_position};
 use crate::spellcheck::{get_dict, spellcheck_diagnostics};
 
+mod args;
 mod definitions;
 mod spellcheck;
+mod typo_correction;
 
 #[derive(Debug)]
 struct Backend {
@@ -124,11 +127,12 @@ impl LanguageServer for Backend {
 
 #[tokio::main]
 async fn main() {
+    let args = args::Args::parse();
+    let client = reqwest::Client::new();
+    let dict = get_dict(&client, args.lang).await.unwrap();
+
     let stdin = tokio::io::stdin();
     let stdout = tokio::io::stdout();
-
-    let client = reqwest::Client::new();
-    let dict = get_dict(&client, "en").await.unwrap();
 
     let (service, socket) = LspService::new(|client| Backend::new(client, dict));
     Server::new(stdin, stdout, socket).serve(service).await;
