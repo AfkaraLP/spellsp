@@ -14,7 +14,7 @@ It supports full-text synchronization and provides diagnostics for spelling erro
 Build the server with:
 
 ```bash
-cargo build --release
+cargo b -r
 ```
 
 Then connect your LSP-compatible editor (like VSCode, Helix, or Neovim) to the server executable.
