@@ -101,23 +101,21 @@ impl LanguageServer for Backend {
     }
 
     async fn completion(&self, _: CompletionParams) -> Result<Option<CompletionResponse>> {
-        Ok(Some(CompletionResponse::Array(vec![
-            // CompletionItem::new_simple("Hello".to_string(), "Some detail".to_string()),
-            // CompletionItem::new_simple("Bye".to_string(), "More detail".to_string()),
-        ])))
+        Ok(Some(CompletionResponse::Array(vec![])))
     }
 
     async fn hover(&self, p: HoverParams) -> Result<Option<Hover>> {
         let pos = p.text_document_position_params.position;
         let text = self.text.lock().await;
         let word = word_at_position(&text, pos);
-        let definition = get_definitions(word.unwrap_or_default())
-            .await
-            .unwrap_or_default();
-        let hover = definition.iter().fold(String::new(), |mut acc, d| {
-            _ = writeln!(acc, "{d}");
-            acc
-        });
+        let mut hover = String::new();
+        if let Some(word) = word {
+            let definitions = get_definitions(word).await.unwrap_or_default();
+            definitions.iter().fold(&mut hover, |acc, d| {
+                _ = writeln!(acc, "{d}");
+                acc
+            });
+        }
         Ok(Some(Hover {
             contents: HoverContents::Scalar(MarkedString::String(hover)),
             range: None,

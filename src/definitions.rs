@@ -81,7 +81,7 @@ impl std::fmt::Display for Definition {
         let pronounciation = self
             .clone()
             .phonetic
-            .unwrap_or("no pronounciation found...".to_string());
+            .unwrap_or("no pronounciation found...".into());
         writeln!(f, "# {word} ({pronounciation})",)?;
         if let Some(origin) = &self.origin {
             write!(f, "origin: {origin}")?;
