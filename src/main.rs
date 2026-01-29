@@ -16,6 +16,7 @@ use crate::definitions::{get_definitions, word_at_position};
 use crate::spellcheck::{get_dict, spellcheck_diagnostics};
 
 mod args;
+mod data_dirs;
 mod definitions;
 mod spellcheck;
 mod typo_correction;
