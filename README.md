@@ -22,13 +22,12 @@ Then connect your LSP-compatible editor (like VSCode, Helix, or Neovim) to the s
 
 Planned improvements and features:
 
-- **Local caching**: Cache dictionaries and lookup results locally to reduce network calls and improve performance.
+- **Local caching**: Cache lookup results locally to reduce network calls and improve performance.
 - **Autocorrect**: Suggest fixes for misspelled words directly in the editor.
 - **Autocomplete**: Provide context-aware word suggestions while typing.
-- **Multi-language support**: Add support for additional languages beyond English.
 - **Custom dictionaries**: Allow users to add personal or project-specific words.
 - **Performance optimization**: Incremental spellcheck updates instead of full-file checks.
-- **Configurable options**: Let users configure dictionary language, ignore lists, and other spellcheck settings.
+- **Configurable options**: Let users configure ignore lists, and other spellcheck settings.
 - **Better LSP features**: Signature help, go-to-definition for words in user-defined dictionaries.
 
 Contributions and suggestions are welcome! This project is still in early stages and mainly a prototype for integrating `zspell` with LSP.
