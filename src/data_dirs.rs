@@ -1,4 +1,9 @@
-use std::{path::PathBuf, sync::LazyLock};
+use anyhow::anyhow;
+use std::{
+    io::{Read, Write},
+    path::{Path, PathBuf},
+    sync::LazyLock,
+};
 
 use dotenv::dotenv;
 
@@ -74,5 +79,29 @@ trait ToSpellspDir {
 impl ToSpellspDir for PathBuf {
     fn to_spellsp_dir(&self) -> Self {
         self.join("spellsp")
+    }
+}
+pub async fn read_or_create<P, F>(path: P, f: F) -> anyhow::Result<String>
+where
+    F: Future<Output = anyhow::Result<String>>,
+    P: AsRef<Path>,
+{
+    let file = std::fs::OpenOptions::new().read(true).open(&path);
+    if let Ok(mut f) = file {
+        let mut s = String::new();
+        f.read_to_string(&mut s)?;
+        Ok(s)
+    } else {
+        let p = path.as_ref();
+        let parent_dir = p.parent().ok_or(anyhow!("failed getting parent dir"))?;
+        std::fs::create_dir_all(parent_dir)?;
+        let mut file = std::fs::OpenOptions::new()
+            .create_new(true)
+            .write(true)
+            .open(path)?;
+        let res = f.await?;
+        file.write_all(res.as_bytes())?;
+
+        Ok(res)
     }
 }

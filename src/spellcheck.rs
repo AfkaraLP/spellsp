@@ -1,13 +1,11 @@
-use std::{
-    io::{Read, Write},
-    path::Path,
-};
-
 use anyhow::anyhow;
 use tower_lsp::lsp_types::{Diagnostic, DiagnosticSeverity, Position, Range};
 use zspell::Dictionary;
 
-use crate::{args::Language, data_dirs::DATA_DIRECTORIES};
+use crate::{
+    args::Language,
+    data_dirs::{DATA_DIRECTORIES, read_or_create},
+};
 
 pub async fn get_dict(
     client: &reqwest::Client,
@@ -21,31 +19,6 @@ pub async fn get_dict(
         .dict_str(&dict)
         .build()
         .map_err(|e| anyhow!("failed building dict: {e:#?}"))
-}
-
-pub async fn read_or_create<P, F>(path: P, f: F) -> anyhow::Result<String>
-where
-    F: Future<Output = anyhow::Result<String>>,
-    P: AsRef<Path>,
-{
-    let file = std::fs::OpenOptions::new().read(true).open(&path);
-    if let Ok(mut f) = file {
-        let mut s = String::new();
-        f.read_to_string(&mut s)?;
-        Ok(s)
-    } else {
-        let p = path.as_ref();
-        let parent_dir = p.parent().ok_or(anyhow!("failed getting parent dir"))?;
-        std::fs::create_dir_all(parent_dir)?;
-        let mut file = std::fs::OpenOptions::new()
-            .create_new(true)
-            .write(true)
-            .open(path)?;
-        let res = f.await?;
-        file.write_all(res.as_bytes())?;
-
-        Ok(res)
-    }
 }
 
 async fn get_from_wooorm(c: &reqwest::Client, url: impl AsRef<str>) -> anyhow::Result<String> {
