@@ -10,7 +10,7 @@ use dotenv::dotenv;
 pub struct PublicDirectories {
     #[allow(unused)]
     pub cache: PathBuf,
-    pub local_share: PathBuf,
+    pub data: PathBuf,
     #[allow(unused)]
     pub config: PathBuf,
 }
@@ -18,10 +18,10 @@ pub struct PublicDirectories {
 pub static DATA_DIRECTORIES: LazyLock<PublicDirectories> = LazyLock::new(|| {
     let cache = resolve_cache_dir().to_spellsp_dir();
     let config = resolve_config_dir().to_spellsp_dir();
-    let local_share = resolve_data_dir().to_spellsp_dir();
+    let data = resolve_data_dir().to_spellsp_dir();
     PublicDirectories {
         cache,
-        local_share,
+        data,
         config,
     }
 });

@@ -6,5 +6,5 @@ comment-token = "#"
 language-servers = ["my-rust-lsp"]
 
 [language-server.my-rust-lsp]
-command = "/home/afkara/projects/spellsp/target/debug/spellsp"
+command = "./target/debug/spellsp"
 args = []

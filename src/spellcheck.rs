@@ -27,9 +27,7 @@ async fn get_from_wooorm(c: &reqwest::Client, url: impl AsRef<str>) -> anyhow::R
 
 async fn get_aff_file(client: &reqwest::Client, lang: Language) -> anyhow::Result<String> {
     let data_dir = &DATA_DIRECTORIES;
-    let lang_cache_path = data_dir
-        .local_share
-        .join(lang.into_wooorm_dictionary_lang_str());
+    let lang_cache_path = data_dir.data.join(lang.into_wooorm_dictionary_lang_str());
     let aff_path = lang_cache_path.join("index.aff");
     let aff = read_or_create(aff_path, async {
         let url = format!("{}/index.aff", lang.wooorm_dictionary_github_root());
@@ -42,9 +40,7 @@ async fn get_aff_file(client: &reqwest::Client, lang: Language) -> anyhow::Resul
 
 async fn get_dic_file(client: &reqwest::Client, lang: Language) -> anyhow::Result<String> {
     let data_dir = &DATA_DIRECTORIES;
-    let lang_cache_path = data_dir
-        .local_share
-        .join(lang.into_wooorm_dictionary_lang_str());
+    let lang_cache_path = data_dir.data.join(lang.into_wooorm_dictionary_lang_str());
     let dic_path = lang_cache_path.join("index.dic");
     let dic = read_or_create(dic_path, async {
         let url = format!("{}/index.dic", lang.wooorm_dictionary_github_root());

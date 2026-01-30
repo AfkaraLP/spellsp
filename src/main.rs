@@ -1,13 +1,14 @@
 use clap::Parser;
+use std::collections::HashMap;
 use std::fmt::Write;
 use tokio::sync::Mutex;
 use tower_lsp::jsonrpc::Result;
 use tower_lsp::lsp_types::{
-    CompletionOptions, CompletionParams, CompletionResponse, DiagnosticOptions,
-    DiagnosticServerCapabilities, DidChangeTextDocumentParams, DidOpenTextDocumentParams, Hover,
-    HoverContents, HoverParams, HoverProviderCapability, InitializeParams, InitializeResult,
-    InitializedParams, MarkedString, MessageType, PositionEncodingKind, ServerCapabilities,
-    TextDocumentSyncCapability, TextDocumentSyncKind, WorkDoneProgressOptions,
+    CompletionOptions, DiagnosticOptions, DiagnosticServerCapabilities,
+    DidChangeTextDocumentParams, DidOpenTextDocumentParams, Hover, HoverContents, HoverParams,
+    HoverProviderCapability, InitializeParams, InitializeResult, InitializedParams, MarkedString,
+    MessageType, PositionEncodingKind, ServerCapabilities, TextDocumentSyncCapability,
+    TextDocumentSyncKind, WorkDoneProgressOptions,
 };
 use tower_lsp::{Client, LanguageServer, LspService, Server};
 use zspell::Dictionary;
@@ -26,6 +27,9 @@ struct Backend {
     client: Client,
     dictionary: Dictionary,
     text: Mutex<String>,
+    // TODO: add garbage collector to not grow this too much
+    // maybe extract to seperate specialised struct but we'll see
+    lookup_cache: Mutex<HashMap<String, String>>,
 }
 
 impl Backend {
@@ -34,6 +38,7 @@ impl Backend {
             client,
             dictionary,
             text: Mutex::new(String::new()),
+            lookup_cache: HashMap::new().into(),
         }
     }
 }
@@ -101,9 +106,9 @@ impl LanguageServer for Backend {
         Ok(())
     }
 
-    async fn completion(&self, _: CompletionParams) -> Result<Option<CompletionResponse>> {
-        Ok(Some(CompletionResponse::Array(vec![])))
-    }
+    // async fn completion(&self, _: CompletionParams) -> Result<Option<CompletionResponse>> {
+    //     Ok(Some(CompletionResponse::Array(vec![])))
+    // }
 
     async fn hover(&self, p: HoverParams) -> Result<Option<Hover>> {
         let pos = p.text_document_position_params.position;
@@ -111,11 +116,24 @@ impl LanguageServer for Backend {
         let word = word_at_position(&text, pos);
         let mut hover = String::new();
         if let Some(word) = word {
-            let definitions = get_definitions(word).await.unwrap_or_default();
-            definitions.iter().fold(&mut hover, |acc, d| {
-                _ = writeln!(acc, "{d}");
-                acc
-            });
+            if let Some(cached_word) = self.lookup_cache.lock().await.get(word.trim()) {
+                return Ok(Some(Hover {
+                    contents: HoverContents::Scalar(MarkedString::String(cached_word.clone())),
+                    range: None,
+                }));
+            }
+            let definitions = get_definitions(word).await;
+            if let Ok(definitions) = definitions {
+                let mut cache = self.lookup_cache.lock().await;
+                definitions.iter().fold(&mut hover, |acc, d| {
+                    _ = writeln!(acc, "{d}");
+                    acc
+                });
+                cache.insert(word.trim().to_string(), hover.clone());
+            }
+        }
+        if hover.is_empty() {
+            return Ok(None);
         }
         Ok(Some(Hover {
             contents: HoverContents::Scalar(MarkedString::String(hover)),
