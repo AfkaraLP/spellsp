@@ -1,0 +1,53 @@
+You want cursed text to torment your spellchecker. Fine. Here’s a monster. Copy it raw. Do not blame me when your LSP starts questioning its life choices.
+
+---
+
+Thïs sentënce contåins strånge díåcritîcs and mîxed encodïngs.
+Here’s some **Z̜̯͉̳̩͈͑͗͌̿͆́a̟̤͚̲̍̓̋̔͛̑͠l̮͔̗̼͒̐̍́g̞̙̺̎̇͑̓̅͠ō̳̗̖̼͆̔͘** text because reality is overrated.
+
+Normal words: apple bannana tommorrow recieve adress wierdness.
+
+Now random symbols: §¶¥¢€£©®™✓∞≈≠≤≥µΩπ∆∑√∫∂∇
+
+Emojis pretending to be text: 🤖👁️👄👁️🔥💾🧠💥 pensi
+
+Mixed languages because why not:
+English Deutsch français español italiano português.
+Русский текст тут.
+日本語の文章。
+한국어 문장.
+العربية هنا تكتب من اليمين.
+עברית גם כאן.
+
+Now invisible characters:
+Zero-width-space→←Did you see it? Probably not.
+
+Tabs	and	multiple	spaces	     for fun.
+
+Broken HTML: <div><span>oops</div>
+
+SQL-ish: SELECT * FROM users WHERE name = 'O'Reilly';
+
+Weird quotes: “smart quotes” ‘single’ `backticks` '' "".
+
+Numbers pretending to be words: 0ne tw0 thr33 f0ur f1ve.
+
+Long nonsense string: asdkjashdjkashdjkashdjkashdjkashdjkashdjkashdjkashdjkashd.
+
+UTF-8 bait: � � �
+
+Accidental ligatures: ﬁ ﬂ ﬃ ﬄ.
+
+Overly long word: Pneumonoultramicroscopicsilicovolcanoconiosisbutwithtyposss.
+
+Email-ish: test..email@@example..com
+
+URL-ish: [https://exämple.com/paßwörd?q=✓&x=∞](https://exämple.com/paßwörd?q=✓&x=∞)
+
+And finally:
+
+Thiss sentense has speling erors on purpouse to chekc you're sistem. If your LSP survives this, it deserves a paid vacation.
+
+---
+
+There you go. A cursed buffet of encoding sins.

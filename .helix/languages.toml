@@ -1,0 +1,10 @@
+[[language]]
+name = "text"
+scope = "text.plain"
+file-types = ["txt"]
+comment-token = "#"
+language-servers = ["my-rust-lsp"]
+
+[language-server.my-rust-lsp]
+command = "./target/debug/spellsp"
+args = []
